@@ -45,7 +45,6 @@ print(df["class"].value_counts())
 # TRATAMENTO DE DADOS
 # -----------------------------------------------------------------------------------------------------
 
-
 # uma simples tradução, apenas para ficar melhor de visualizar
 translate = {
     "Age": "idade",
@@ -68,7 +67,6 @@ translate = {
 }
 
 df = df.rename(columns=translate)
-
 
 binaryColumns = {
     "poliuria",
@@ -104,3 +102,13 @@ df["classe"] = df["classe"].map({
 })
 
 print(df.head())
+
+# -----------------------------------------------------------------------------------------------------
+# Divisão de X e Y
+# -----------------------------------------------------------------------------------------------------
+
+x = df.drop("classe", axis=1)
+y = df["classe"]
+
+print("x: ", x.head())
+print("y: ", y.head())
