@@ -87,8 +87,8 @@ binaryColumns = {
     "obesidade"
 }
 
-for coluna in binaryColumns:
-    df[coluna] = df[coluna].map({
+for column in binaryColumns:
+    df[column] = df[column].map({
         "Yes": 1,
         "No": 0
     })
