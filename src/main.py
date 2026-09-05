@@ -46,29 +46,29 @@ print(df["class"].value_counts())
 # -----------------------------------------------------------------------------------------------------
 
 
-# # uma simples tradução, apenas para ficar melhor de visualizar
-# translate = {
-#     "Age": "idade",
-#     "Gender": "genero",
-#     "Polyuria": "poliuria",
-#     "Polydipsia": "polidipsia",
-#     "sudden weight loss": "perda_peso_subita",
-#     "weakness": "fraqueza",
-#     "Polyphagia": "polifagia",
-#     "Genital thrush": "candidiase_genital",
-#     "visual blurring": "visao_embacada",
-#     "Itching": "coceira",
-#     "Irritability": "irritabilidade",
-#     "delayed healing": "cicatrizacao_atrasada",
-#     "partial paresis": "paresia_parcial",
-#     "muscle stiffness": "rigidez_muscular",
-#     "Alopecia": "alopecia",
-#     "Obesity": "obesidade",
-#     "class": "classe"
-# }
+# uma simples tradução, apenas para ficar melhor de visualizar
+translate = {
+    "Age": "idade",
+    "Gender": "genero",
+    "Polyuria": "poliuria",
+    "Polydipsia": "polidipsia",
+    "sudden weight loss": "perda_peso_subita",
+    "weakness": "fraqueza",
+    "Polyphagia": "polifagia",
+    "Genital thrush": "candidiase_genital",
+    "visual blurring": "visao_embacada",
+    "Itching": "coceira",
+    "Irritability": "irritabilidade",
+    "delayed healing": "cicatrizacao_atrasada",
+    "partial paresis": "paresia_parcial",
+    "muscle stiffness": "rigidez_muscular",
+    "Alopecia": "alopecia",
+    "Obesity": "obesidade",
+    "class": "classe"
+}
 
-# df = df.rename(columns=translate)
-#
+df = df.rename(columns=translate)
+
 
 binaryColumns = {
     "poliuria",
@@ -93,3 +93,15 @@ for column in binaryColumns:
         "No": 0
     })
 
+df["genero"] = df["genero"].map({
+    "Male": 1,
+    "Female": 0
+})
+
+# Converter classe
+df["classe"] = df["classe"].map({
+    "Positive": 1,
+    "Negative": 0
+})
+
+print(df.head())
