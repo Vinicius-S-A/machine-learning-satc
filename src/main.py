@@ -98,7 +98,6 @@ df["genero"] = df["genero"].map({
     "Female": 0
 })
 
-# Converter classe
 df["classe"] = df["classe"].map({
     "Positive": 1,
     "Negative": 0
