@@ -27,6 +27,9 @@ def carregarDados():
     # no dataset original foram encontrados 269 de 520 registros...
     # porém foi mantido pois não se sabe se são realmente duplicados ou se são registros de pessoas diferentes com os mesmos dados
 
+    # (PROBLEMA IDENTIFICADO APÓS OS TESTES) a mesma linha cai no treino e no teste, e a accuracy aumenta, então resolvemos retirar.
+    df = df.drop_duplicates().reset_index(drop=True)
+
     # comentário extra referente a aula:
     # Em outros projetos seria importante, pois um modelo que retornasse positive para tudo, 
     # teria uma accuracy de alta e não seria um bom modelo, como foi visto em aula.
