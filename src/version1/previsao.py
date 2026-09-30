@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 def preverNovoPaciente(modelo_treinado, limiar_clinico, dados_paciente):
     print("\n" + "=" * 50)
     print("SISTEMA DE TRIAGEM: AVALIAÇÃO DE NOVO PACIENTE")
