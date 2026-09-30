@@ -1,4 +1,3 @@
-# LEIA!!
 # é NECESSÁRIO rodar esse script apenas uma vez para baixar o dataset do CDC e salvar em um arquivo CSV do /data
 
 import pandas as pd
