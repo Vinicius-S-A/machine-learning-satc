@@ -5,24 +5,32 @@ from regressao import (treinarRegressao, validarRegressao, compararC,
 from avaliacao import avaliarModeloCompleto
 
 from previsao import preverNovoPaciente
+from pacientes import PACIENTES
+from selecao import compararSelecao
 
 # ______________________
 # CONFIGURAÇÃO:
 tamanho = None              # None = dataset inteiro | ex.: 50000 = amostra (o KNN fica bem mais rápido)
-remover_duplicatas = False  # ver explicação no preprocessamento.py
-avaliar = True
-analisarRegressao = True
-analisarKNN = True
-prever = True              # o previsao.py ainda usa as colunas do dataset antigo (Sylhet)
+
+analisarSelecao = False     # compara a AUC removendo grupos de colunas
+avaliar = False
+analisarRegressao = False
+analisarKNN = False
+
+prever = True              # testa os pacientes de exemplo do pacientes.py
+limiar_clinico = 0.3        # limiar de decisão usado na previsão (ver analisarLimiares)
 limiares = (0.5, 0.2)       # limiares usados na avaliação final
 # ______________________
 
-X_train, X_test, y_train, y_test = carregarDados(tamanho=tamanho, remover_duplicatas=remover_duplicatas)
+X_train, X_test, y_train, y_test = carregarDados(tamanho=tamanho)
 print(f"Treino: {len(X_train)} linhas | Teste: {len(X_test)} linhas | Colunas: {X_train.shape[1]}")
 
-# Valores padrão; se a análise estiver ligada, são substituídos pelos escolhidos na validação (só no treino)
-c = 1
-k = 3
+# Valores padrão, MAS se a análise (analisarRegressao ou analisarKNN) estiver ligada, são substituídos pelos escolhidos na validação
+c = 0.1
+k = 51
+
+if analisarSelecao:
+    compararSelecao(X_train, y_train, c=c, k=max(k, 15), uma_por_vez=True)
 
 if analisarRegressao:
     validarRegressao(X_train, y_train, c)
@@ -43,5 +51,9 @@ if analisarRegressao:
     mostrarCoeficientes(logistic)
 
 if prever:
-    preverNovoPaciente(knn, limiar_clinico=0.3)
-    preverNovoPaciente(logistic, limiar_clinico=0.3)
+    for nome, paciente in PACIENTES.items():
+        print(f"\n########## Paciente: {nome} ##########")
+        print(f"--- Modelo: KNN (k={k}) ---")
+        preverNovoPaciente(knn, paciente, limiar_clinico=limiar_clinico)
+        print(f"--- Modelo: Regressao Logistica (C={c}) ---")
+        preverNovoPaciente(logistic, paciente, limiar_clinico=limiar_clinico)

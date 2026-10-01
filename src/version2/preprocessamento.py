@@ -18,25 +18,33 @@ def carregarDados(caminho="data/cdc_diabetes.csv", tamanho=None, remover_duplica
     # print(df.info())
     # print(df.describe())
     # print(df["Diabetes_binary"].value_counts(normalize=True))
-    # o dataset tem cerca de 14% de positivos (diabetes ou pré-diabetes): é DESBALANCEADO.
-    # Um modelo que sempre responde "não" acerta ~86%, então a acurácia sozinha engana.
-    # Por isso a avaliação usa AUC, precisão, recall e análise de limiar.
+    # o dataset tem cerca de 14% de positivos (diabetes ou pré-diabetes): é DESBALANCEADO...
+    # Um modelo que sempre responde "não" acerta ~86%, então a acurácia sozinha engana
+    # Por isso a avaliação usa AUC, precisão, recall e análise de limiar
 
-    # identificador não é atributo (se vier no arquivo)
-    df = df.drop(columns=["ID"], errors="ignore")
+    # remover colunas indesejadas/ruído
+    list = [
+        "Education", 
+        "Income", 
+        "CholCheck", 
+        "MentHlth", 
+        "AnyHealthcare", 
+        "NoDocbcCost", 
+        "HvyAlcoholConsump", 
+        "Smoker",
+        # "PhysActivity",
+        # "Fruits",
+        # "Veggies",
+        # "GenHlth",
+        # "PhysHlth",
+        # "DiffWalk",
+        # "Stroke"
+        ]
+    for col in list:
+        if col in df.columns:
+            df = df.drop(columns=[col])
 
-    # valores nulos: a página do UCI informa que não há, mas conferimos
-    nulos = df.isnull().sum().sum()
-    if nulos > 0:
-        print(f"Aviso: {nulos} valores nulos encontrados, as linhas com nulos foram removidas")
-        df = df.dropna()
-
-    # Duplicatas: no dataset de Sylhet (520 linhas) mais da metade era duplicada e isso vazava
-    # linhas idênticas para o teste. Aqui são ~250 mil pessoas e poucas respostas possíveis por coluna,
-    # então é esperado que pessoas DIFERENTES tenham respostas idênticas. Remover tudo descartaria
-    # informação real e mudaria a proporção de diabéticos. Por isso o padrão é MANTER.
-    # A opção existe para comparar os dois cenários.
-    # print("Duplicados:", df.duplicated().sum())
+    print("Duplicados:", df.duplicated().sum())
     if remover_duplicatas:
         df = df.drop_duplicates().reset_index(drop=True)
 
@@ -50,25 +58,25 @@ def carregarDados(caminho="data/cdc_diabetes.csv", tamanho=None, remover_duplica
         "Diabetes_binary": "classe",
         "HighBP": "pressao_alta",
         "HighChol": "colesterol_alto",
-        "CholCheck": "checou_colesterol",
+        # "CholCheck": "checou_colesterol",
         "BMI": "imc",
-        "Smoker": "fumante",
+        # "Smoker": "fumante",
         "Stroke": "avc",
         "HeartDiseaseorAttack": "doenca_cardiaca_ou_infarto",
         "PhysActivity": "atividade_fisica",
         "Fruits": "consome_frutas",
         "Veggies": "consome_vegetais",
-        "HvyAlcoholConsump": "alcool_excessivo",
-        "AnyHealthcare": "tem_plano_saude",
-        "NoDocbcCost": "sem_medico_por_custo",
+        # "HvyAlcoholConsump": "alcool_excessivo",
+        # "AnyHealthcare": "tem_plano_saude",
+        # "NoDocbcCost": "sem_medico_por_custo",
         "GenHlth": "saude_geral",
-        "MentHlth": "dias_saude_mental_ruim",
+        # "MentHlth": "dias_saude_mental_ruim",
         "PhysHlth": "dias_saude_fisica_ruim",
         "DiffWalk": "dificuldade_caminhar",
         "Sex": "sexo",
         "Age": "faixa_etaria",
-        "Education": "escolaridade",
-        "Income": "renda"
+        # "Education": "escolaridade",
+        # "Income": "renda"
     }
 
     df = df.rename(columns=translate)
