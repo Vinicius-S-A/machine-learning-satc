@@ -1,7 +1,7 @@
 from preprocessamento import carregarDados
 from knn import treinarKNN, compararK
 from regressao import (treinarRegressao, validarRegressao, compararC, analisarLimiares, mostrarCoeficientes)
-from avaliacao import avaliarModeloCompleto
+from avaliacao import avaliarModeloCompleto, avaliarRMSE
 
 from previsao import preverNovoPaciente
 from pacientes import PACIENTES
@@ -9,11 +9,11 @@ from pacientes import PACIENTES
 # ______________________
 # CONFIGURAÇÃO:
 tamanho = None              # None = dataset inteiro, ex.: 50000 = amostra (o KNN fica bem mais rápido)
-avaliar = False
+avaliar = True
 analisarRegressao = False
 analisarKNN = False
-prever = True              # o previsao.py ainda usa as colunas do dataset antigo (Sylhet)
-limiares = (0.7, 0.5, 0.2)       # limiares usados na avaliação final
+prever = False              # o previsao.py ainda usa as colunas do dataset antigo (Sylhet)
+limiares = (0.9, 0.7, 0.5, 0.2, 0.1)       # limiares usados na avaliação final
 # ______________________
 
 X_train, X_test, y_train, y_test = carregarDados("data/cdc_diabetes.csv", tamanho)
@@ -37,6 +37,10 @@ knn = treinarKNN(X_train, y_train, k)
 if avaliar:
     avaliarModeloCompleto(f"KNN (k={k})", knn, X_test, y_test, limiares)
     avaliarModeloCompleto(f"Regressao Logistica (C={c})", logistic, X_test, y_test, limiares)
+    
+    avaliarRMSE("Regressao Logistica", logistic, X_train, y_train, X_test, y_test)
+    avaliarRMSE("KNN", knn, X_train, y_train, X_test, y_test)
+
 
 if analisarRegressao:
     mostrarCoeficientes(logistic)

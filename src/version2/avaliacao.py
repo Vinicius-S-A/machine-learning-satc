@@ -1,11 +1,25 @@
-from sklearn.metrics import (accuracy_score, precision_score, recall_score, f1_score,
+from sklearn.metrics import (accuracy_score, mean_squared_error, precision_score, recall_score, f1_score,
                              roc_auc_score, confusion_matrix)
+import numpy as np
 
 def avaliarModelo(type, model, X_test, y_test):
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
     print(f"Acurácia do {type}: {accuracy}")
     return accuracy
+
+def avaliarRMSE(nome, model, X_train, y_train, X_test, y_test):
+    prob = model.predict_proba(X_test)[:, 1]
+    y = np.asarray(y_test)
+    rmse = np.sqrt(mean_squared_error(y, prob))
+
+    # baseline: dar a todos a prevalência do treino
+    p = np.asarray(y_train).mean()
+    rmse_base = np.sqrt(mean_squared_error(y, np.full(len(y), p)))
+    ganho = 1 - (rmse ** 2) / (rmse_base ** 2)
+
+    print(f"{nome}: RMSE={rmse:.4f} | baseline (sempre prever {p:.1%})={rmse_base:.4f} | ganho sobre o baseline={ganho:.1%}")
+    return rmse
 
 def avaliarModeloCompleto(type, model, X_test, y_test, limiares=(0.5,)):
     prob = model.predict_proba(X_test)[:, 1]

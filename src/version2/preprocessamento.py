@@ -17,7 +17,7 @@ def carregarDados(caminho, tamanho):
     # print(df.head())
     # print(df.info())
     # print(df.describe())
-    # print(df["Diabetes_binary"].value_counts(normalize=True))
+    print(df["Diabetes_binary"].value_counts(normalize=True))
     # o dataset tem cerca de 14% de positivos (diabetes ou pré-diabetes): é DESBALANCEADO...
     # Um modelo que sempre responde "não" acerta 86%, então a acurácia sozinha engana
     # Por isso a avaliação usa AUC, precisão, recall e análise de limiar
