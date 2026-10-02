@@ -12,3 +12,11 @@ print(df.columns.tolist())
 print(df["Diabetes_binary"].value_counts(normalize=True))
 
 df.to_csv("data/cdc_diabetes.csv", index=False)
+
+# remove a pasta setup, pois não será mais necessária
+from pathlib import Path
+import shutil
+
+pasta = Path(__file__).resolve().parent
+
+shutil.rmtree(pasta)
