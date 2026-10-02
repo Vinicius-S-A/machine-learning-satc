@@ -8,7 +8,7 @@ import pandas as pd
 # ______________________
 # CONFIGURAÇÃO:
 avaliar = False
-analisarRegressao = False
+analisarRegressao = True
 prever = True
 # ______________________
 
@@ -33,20 +33,20 @@ if prever:
         "poliuria": 0,
         "polidipsia": 0,
         "perda_peso_subita": 0,
-        "fraqueza": 0,
+        "fraqueza": 1,
         "polifagia": 0,
-        "candidiase_genital": 0,
+        "candidiase_genital": 1,
         "visao_embacada": 1,
         "coceira": 0,
         "irritabilidade": 0,
         "cicatrizacao_atrasada": 1,
-        "paresia_parcial": 1,
+        "paresia_parcial": 0,
         "rigidez_muscular": 0,
         "alopecia": 0,
-        "obesidade": 0
+        "obesidade": 1
     }])
 
     limiar_clinico = 0.3 # 30%
 
     preverNovoPaciente(knn, limiar_clinico, dados_paciente)
-    preverNovoPaciente(logistic, limiar_clinico, dados_paciente)
+    preverNovoPaciente(logistic, 0.5, dados_paciente)

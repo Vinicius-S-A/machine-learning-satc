@@ -7,7 +7,7 @@ def colunasNumericas(X):
     # Usada pelos pipelines do KNN e da regressão logística.
     return [coluna for coluna in X.columns if X[coluna].nunique() > 2]
 
-def carregarDados(caminho="data/cdc_diabetes.csv", tamanho=None, remover_duplicatas=False):
+def carregarDados(caminho, tamanho):
     df = pd.read_csv(caminho)
 
     # ----------------------------------------------------------------------------------------------------
@@ -18,27 +18,34 @@ def carregarDados(caminho="data/cdc_diabetes.csv", tamanho=None, remover_duplica
     # print(df.info())
     # print(df.describe())
     # print(df["Diabetes_binary"].value_counts(normalize=True))
-    # o dataset tem cerca de 14% de positivos (diabetes ou pré-diabetes): é DESBALANCEADO.
-    # Um modelo que sempre responde "não" acerta ~86%, então a acurácia sozinha engana.
-    # Por isso a avaliação usa AUC, precisão, recall e análise de limiar.
+    # o dataset tem cerca de 14% de positivos (diabetes ou pré-diabetes): é DESBALANCEADO...
+    # Um modelo que sempre responde "não" acerta ~86%, então a acurácia sozinha engana
+    # Por isso a avaliação usa AUC, precisão, recall e análise de limiar
 
-    # identificador não é atributo (se vier no arquivo)
-    df = df.drop(columns=["ID"], errors="ignore")
+    # remover colunas indesejadas/ruído
+    list = [
+        "Education", 
+        "Income", 
+        "CholCheck", 
+        "MentHlth", 
+        "AnyHealthcare", 
+        "NoDocbcCost", 
+        "HvyAlcoholConsump", 
+        "Smoker",
+        # "PhysActivity",
+        # "Fruits",
+        # "Veggies",
+        # "GenHlth",
+        # "PhysHlth",
+        # "DiffWalk",
+        # "Stroke"
+        ]
+    for col in list:
+        if col in df.columns:
+            df = df.drop(columns=[col])
 
-    # valores nulos: a página do UCI informa que não há, mas conferimos
-    nulos = df.isnull().sum().sum()
-    if nulos > 0:
-        print(f"Aviso: {nulos} valores nulos encontrados, as linhas com nulos foram removidas")
-        df = df.dropna()
-
-    # Duplicatas: no dataset de Sylhet (520 linhas) mais da metade era duplicada e isso vazava
-    # linhas idênticas para o teste. Aqui são ~250 mil pessoas e poucas respostas possíveis por coluna,
-    # então é esperado que pessoas DIFERENTES tenham respostas idênticas. Remover tudo descartaria
-    # informação real e mudaria a proporção de diabéticos. Por isso o padrão é MANTER.
-    # A opção existe para comparar os dois cenários.
-    # print("Duplicados:", df.duplicated().sum())
-    if remover_duplicatas:
-        df = df.drop_duplicates().reset_index(drop=True)
+    print("Duplicados:", df.duplicated().sum())
+    df = df.drop_duplicates().reset_index(drop=True)
 
     # -----------------------------------------------------------------------------------------------------
     # TRATAMENTO DE DADOS
@@ -50,38 +57,35 @@ def carregarDados(caminho="data/cdc_diabetes.csv", tamanho=None, remover_duplica
         "Diabetes_binary": "classe",
         "HighBP": "pressao_alta",
         "HighChol": "colesterol_alto",
-        "CholCheck": "checou_colesterol",
+        # "CholCheck": "checou_colesterol",
         "BMI": "imc",
-        "Smoker": "fumante",
+        # "Smoker": "fumante",
         "Stroke": "avc",
         "HeartDiseaseorAttack": "doenca_cardiaca_ou_infarto",
         "PhysActivity": "atividade_fisica",
         "Fruits": "consome_frutas",
         "Veggies": "consome_vegetais",
-        "HvyAlcoholConsump": "alcool_excessivo",
-        "AnyHealthcare": "tem_plano_saude",
-        "NoDocbcCost": "sem_medico_por_custo",
+        # "HvyAlcoholConsump": "alcool_excessivo",
+        # "AnyHealthcare": "tem_plano_saude",
+        # "NoDocbcCost": "sem_medico_por_custo",
         "GenHlth": "saude_geral",
-        "MentHlth": "dias_saude_mental_ruim",
+        # "MentHlth": "dias_saude_mental_ruim",
         "PhysHlth": "dias_saude_fisica_ruim",
         "DiffWalk": "dificuldade_caminhar",
         "Sex": "sexo",
         "Age": "faixa_etaria",
-        "Education": "escolaridade",
-        "Income": "renda"
+        # "Education": "escolaridade",
+        # "Income": "renda"
     }
-
     df = df.rename(columns=translate)
 
     if "classe" not in df.columns:
         raise ValueError(f"Coluna alvo 'Diabetes_binary' não encontrada. Colunas do arquivo: {list(df.columns)}")
 
-    # Não precisa mapear Yes/No: neste dataset tudo já é numérico (vem como 0.0/1.0, então convertemos para inteiro).
-    # Colunas ordinais (faixa_etaria 1-13, saude_geral 1-5, escolaridade 1-6, renda 1-8) ficam como números.
+    # (faixa_etaria 1-13, saude_geral 1-5, escolaridade 1-6, renda 1-8) ficam como números
     df = df.astype(int)
 
-    # Amostra estratificada (mantém a proporção de diabéticos). Útil para rodar o KNN mais rápido
-    # ou para comparar o desempenho com diferentes quantidades de dados.
+    # para rodar o KNN mais rápido, se tiver o tamanho
     if tamanho is not None and tamanho < len(df):
         _, df = train_test_split(df, test_size=tamanho, random_state=42, stratify=df["classe"])
         df = df.reset_index(drop=True)

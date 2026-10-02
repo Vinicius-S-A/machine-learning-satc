@@ -5,24 +5,24 @@ from regressao import (treinarRegressao, validarRegressao, compararC,
 from avaliacao import avaliarModeloCompleto
 
 from previsao import preverNovoPaciente
+from pacientes import PACIENTES
 
 # ______________________
 # CONFIGURAÇÃO:
-tamanho = None              # None = dataset inteiro | ex.: 50000 = amostra (o KNN fica bem mais rápido)
-remover_duplicatas = False  # ver explicação no preprocessamento.py
-avaliar = True
-analisarRegressao = True
-analisarKNN = True
+tamanho = None              # None = dataset inteiro, ex.: 50000 = amostra (o KNN fica bem mais rápido)
+avaliar = False
+analisarRegressao = False
+analisarKNN = False
 prever = True              # o previsao.py ainda usa as colunas do dataset antigo (Sylhet)
 limiares = (0.5, 0.2)       # limiares usados na avaliação final
 # ______________________
 
-X_train, X_test, y_train, y_test = carregarDados(tamanho=tamanho, remover_duplicatas=remover_duplicatas)
+X_train, X_test, y_train, y_test = carregarDados("data/cdc_diabetes.csv", tamanho)
 print(f"Treino: {len(X_train)} linhas | Teste: {len(X_test)} linhas | Colunas: {X_train.shape[1]}")
 
 # Valores padrão; se a análise estiver ligada, são substituídos pelos escolhidos na validação (só no treino)
-c = 1
-k = 3
+c = 0.1
+k = 101 # 3
 
 if analisarRegressao:
     validarRegressao(X_train, y_train, c)
@@ -43,5 +43,10 @@ if analisarRegressao:
     mostrarCoeficientes(logistic)
 
 if prever:
-    preverNovoPaciente(knn, limiar_clinico=0.3)
-    preverNovoPaciente(logistic, limiar_clinico=0.3)
+    limiar_clinico = 0.1
+    for nome, paciente in PACIENTES.items():
+        print(f"\n########## Paciente: {nome} ##########")
+        print(f"--- Modelo: KNN (k={k}) ---")
+        preverNovoPaciente(knn, paciente, limiar_clinico)
+        print(f"--- Modelo: Regressao Logistica (C={c}) ---")
+        preverNovoPaciente(logistic, paciente, limiar_clinico)

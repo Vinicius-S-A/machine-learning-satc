@@ -62,14 +62,14 @@ def analisarLimiares(X_train, y_train, c, limiares=(0.3, 0.5, 0.7)):
     prob = cross_val_predict(criarModelo(c), X_train, y_train, cv=cv, method="predict_proba")[:, 1]
 
     print("\n--- Efeito do limiar (previsoes de validacao no treino) ---")
-    print(f"{'limiar':<8}{'TP':>5}{'FP':>5}{'FN':>5}{'Precisao':>11}{'Recall':>9}")
+    print(f"{'limiar':<8}{'TP':>5}{'TN':>5}{'FP':>5}{'FN':>5}{'Precisao':>11}{'Recall':>9}")
     for tau in limiares:
         pred = (prob >= tau).astype(int)
         tn, fp, fn, tp = confusion_matrix(y_train, pred, labels=[0, 1]).ravel()
-        print(f"{tau:<8}{tp:>5}{fp:>5}{fn:>5}{precision_score(y_train, pred):>10.2%}{recall_score(y_train, pred):>9.2%}")
+        print(f"{tau:<8}{tp:>5}{tn:>5}{fp:>5}{fn:>5}{precision_score(y_train, pred):>10.2%}{recall_score(y_train, pred):>9.2%}")
 
     # Em triagem de diabetes, um falso negativo (doente que passa despercebido) costuma
-    # ser mais grave que um falso positivo, entao limiares menores podem fazer sentido.
+    # ser mais grave que um falso positivo, entao limiares menores podem fazer sentido
 
 
 # ----------------------------------------------------------------------------------------------------

@@ -1,17 +1,13 @@
 from sklearn.metrics import (accuracy_score, precision_score, recall_score, f1_score,
                              roc_auc_score, confusion_matrix)
 
-
 def avaliarModelo(type, model, X_test, y_test):
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
     print(f"Acurácia do {type}: {accuracy}")
     return accuracy
 
-
 def avaliarModeloCompleto(type, model, X_test, y_test, limiares=(0.5,)):
-    # Com ~14% de positivos a acurácia sozinha engana, então mostramos o baseline junto
-    # e as demais métricas. A probabilidade é calculada uma única vez (o KNN é lento).
     prob = model.predict_proba(X_test)[:, 1]
     baseline = max(y_test.mean(), 1 - y_test.mean())
 

@@ -3,7 +3,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
  
-def criarModeloKNN(k=3):
+def criarModeloKNN(k=9):
     # O KNN usa distância, e a idade (16 a 90) dominaria as colunas 0/1 se ficasse sem escala.
     # Apenas idade precisa de padronização, o resto passa direto.
     preparo = ColumnTransformer(
