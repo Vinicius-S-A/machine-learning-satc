@@ -1,3 +1,12 @@
+"""
+previsao.py — Version 2 Refatorada
+-------------------------------------
+Mantido funcionalmente idêntico ao original (já estava bem implementado).
+Pequenas melhorias:
+  - Documentação alinhada com o restante do módulo refatorado.
+  - Sem alterações de lógica.
+"""
+
 import pandas as pd
 
 COLUNAS_ESPERADAS = [
@@ -25,58 +34,67 @@ COLUNAS_ESPERADAS = [
 ]
 
 
-def preverNovoPaciente(modelo_treinado, dados_paciente: dict, limiar_clinico=0.3):
+def preverNovoPaciente(
+    modelo_treinado,
+    dados_paciente: dict,
+    limiar_clinico: float = 0.3,
+) -> dict:
     """
-    Realiza a predição de risco de diabetes para um único paciente.
+    Prediz o risco de diabetes para um único paciente.
 
-    Parâmetros:
-        modelo_treinado: modelo treinado com método predict_proba.
-        dados_paciente: dicionário contendo exatamente as 21 colunas esperadas.
-        limiar_clinico: limiar de decisão para classe positiva (default: 0.30).
+    Parâmetros
+    ----------
+    modelo_treinado : Pipeline scikit-learn
+        Modelo com método predict_proba.
+    dados_paciente : dict
+        Dicionário com exatamente as 21 chaves de COLUNAS_ESPERADAS.
+    limiar_clinico : float
+        Limiar de decisão (padrão 0.30 — mais conservador que 0.5
+        para minimizar falsos negativos em triagem clínica).
 
-    Retorna:
-        dict com a probabilidade de risco e a decisão final.
+    Retorna
+    -------
+    dict com probabilidade, decisão e limiar usado.
     """
     if not isinstance(dados_paciente, dict):
         raise TypeError("dados_paciente deve ser um dicionário com as 21 chaves esperadas.")
 
-    chaves_entrada = set(dados_paciente.keys())
+    chaves_entrada   = set(dados_paciente.keys())
     chaves_esperadas = set(COLUNAS_ESPERADAS)
 
     if chaves_entrada != chaves_esperadas:
-        faltantes = [coluna for coluna in COLUNAS_ESPERADAS if coluna not in dados_paciente]
-        extras = [coluna for coluna in dados_paciente.keys() if coluna not in COLUNAS_ESPERADAS]
-        mensagem = "dados_paciente deve conter exatamente as 21 chaves esperadas."
+        faltantes = [c for c in COLUNAS_ESPERADAS if c not in dados_paciente]
+        extras    = [c for c in dados_paciente   if c not in chaves_esperadas]
+        msg = "dados_paciente deve conter exatamente as 21 chaves esperadas."
         if faltantes:
-            mensagem += f" Faltantes: {faltantes}."
+            msg += f" Faltantes: {faltantes}."
         if extras:
-            mensagem += f" Extras: {extras}."
-        raise ValueError(mensagem)
+            msg += f" Extras: {extras}."
+        raise ValueError(msg)
 
     df_paciente = pd.DataFrame([dados_paciente], columns=COLUNAS_ESPERADAS)
 
-    if hasattr(modelo_treinado, "predict_proba"):
-        probabilidades = modelo_treinado.predict_proba(df_paciente)[0]
-    else:
+    if not hasattr(modelo_treinado, "predict_proba"):
         raise AttributeError("O modelo treinado não possui o método predict_proba().")
+
+    probabilidades = modelo_treinado.predict_proba(df_paciente)[0]
 
     if len(probabilidades) < 2:
         raise ValueError("O modelo deve produzir probabilidades para duas classes (0 e 1).")
 
     prob_risco = float(probabilidades[1])
+    decisao    = "positivo" if prob_risco >= limiar_clinico else "negativo"
 
     print("\n" + "=" * 60)
     print("SISTEMA DE TRIAGEM: AVALIAÇÃO DE NOVO PACIENTE")
     print("=" * 60)
     print(f"Probabilidade clínica calculada: {prob_risco:.2%}")
 
-    if prob_risco >= limiar_clinico:
+    if decisao == "positivo":
         print("ALERTA: Paciente classificado como POSITIVO para risco de Diabetes.")
-        print(f"(Limiar de segurança de {limiar_clinico * 100:.0f}% ultrapassado)")
-        decisao = "positivo"
+        print(f"(Limiar de {limiar_clinico * 100:.0f}% ultrapassado)")
     else:
         print("DIAGNÓSTICO: Paciente classificado como NEGATIVO para risco inicial.")
-        decisao = "negativo"
 
     print("=" * 60 + "\n")
 
@@ -86,62 +104,3 @@ def preverNovoPaciente(modelo_treinado, dados_paciente: dict, limiar_clinico=0.3
         "prob_risco_percentual": prob_risco * 100,
         "limiar_clinico": limiar_clinico,
     }
-
-
-if __name__ == "__main__":
-    # Exemplo de uso em produção:
-    # class ModeloMock:
-    #     def predict_proba(self, df):
-    #         return [[0.15, 0.85]]
-    #
-    # modelo_mock = ModeloMock()
-    # paciente_alto_risco = {
-    #     "pressao_alta": 1,
-    #     "colesterol_alto": 1,
-    #     "checou_colesterol": 1,
-    #     "imc": 34,
-    #     "fumante": 1,
-    #     "avc": 0,
-    #     "doenca_cardiaca_ou_infarto": 1,
-    #     "atividade_fisica": 0,
-    #     "consome_frutas": 0,
-    #     "consome_vegetais": 0,
-    #     "alcool_excessivo": 1,
-    #     "tem_plano_saude": 1,
-    #     "sem_medico_por_custo": 0,
-    #     "saude_geral": 4,
-    #     "dias_saude_mental_ruim": 12,
-    #     "dias_saude_fisica_ruim": 10,
-    #     "dificuldade_caminhar": 1,
-    #     "sexo": 1,
-    #     "faixa_etaria": 12,
-    #     "escolaridade": 2,
-    #     "renda": 3,
-    # }
-    # preverNovoPaciente(modelo_mock, paciente_alto_risco, limiar_clinico=0.3)
-
-    print("Exemplo de dicionário para um paciente de alto risco:")
-    paciente_exemplo = {
-        "pressao_alta": 1,
-        "colesterol_alto": 1,
-        "checou_colesterol": 1,
-        "imc": 34,
-        "fumante": 1,
-        "avc": 0,
-        "doenca_cardiaca_ou_infarto": 1,
-        "atividade_fisica": 0,
-        "consome_frutas": 0,
-        "consome_vegetais": 0,
-        "alcool_excessivo": 1,
-        "tem_plano_saude": 1,
-        "sem_medico_por_custo": 0,
-        "saude_geral": 4,
-        "dias_saude_mental_ruim": 12,
-        "dias_saude_fisica_ruim": 10,
-        "dificuldade_caminhar": 1,
-        "sexo": 1,
-        "faixa_etaria": 12,
-        "escolaridade": 2,
-        "renda": 3,
-    }
-    print(paciente_exemplo)
