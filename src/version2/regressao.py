@@ -56,7 +56,6 @@ def compararC(X_train, y_train, valores=(0.1, 1, 10)):
 
     melhor = max(resultados, key=resultados.get)
     print(f"melhor c na validacao e {melhor}")
-    # Com muitos dados a regularizacao importa pouco: se as AUCs forem quase iguais, qualquer C serve.
 
     return melhor
 
@@ -74,10 +73,6 @@ def analisarLimiares(X_train, y_train, c, limiares=(0.1, 0.2, 0.3, 0.5)):
         rec = recall_score(y_train, pred, zero_division=0)
         print(f"{tau:<8}{tp:>8}{fp:>8}{fn:>8}{prec:>10.2%}{rec:>9.2%}")
 
-    # Com ~14% de positivos, o limiar 0.5 costuma deixar passar muitos casos (recall baixo).
-    # Limiares menores aumentam o recall à custa da precisão: a escolha depende do custo de cada erro.
-
-
 # ----------------------------------------------------------------------------------------------------
 # INTERPRETAÇÃO
 # ----------------------------------------------------------------------------------------------------
@@ -90,7 +85,5 @@ def mostrarCoeficientes(model):
     print("\n--- Coeficientes (classe 1 = diabetes ou pre-diabetes) ---")
     print(coef.round(4))
     print("Intercepto:", model.named_steps["logit"].intercept_.round(4))
-    # Positivo aumenta o escore; negativo diminui. Colunas não binárias estão padronizadas
-    # (1 unidade = 1 desvio-padrão). É associação aprendida, não prova causalidade.
 
     return coef

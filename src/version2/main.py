@@ -1,7 +1,6 @@
 from preprocessamento import carregarDados
 from knn import treinarKNN, compararK
-from regressao import (treinarRegressao, validarRegressao, compararC,
-                       analisarLimiares, mostrarCoeficientes)
+from regressao import (treinarRegressao, validarRegressao, compararC, analisarLimiares, mostrarCoeficientes)
 from avaliacao import avaliarModeloCompleto
 
 from previsao import preverNovoPaciente
@@ -10,11 +9,11 @@ from pacientes import PACIENTES
 # ______________________
 # CONFIGURAÇÃO:
 tamanho = None              # None = dataset inteiro, ex.: 50000 = amostra (o KNN fica bem mais rápido)
-avaliar = False
-analisarRegressao = False
-analisarKNN = False
+avaliar = True
+analisarRegressao = True
+analisarKNN = True
 prever = True              # o previsao.py ainda usa as colunas do dataset antigo (Sylhet)
-limiares = (0.5, 0.2)       # limiares usados na avaliação final
+limiares = (0.7, 0.5, 0.2)       # limiares usados na avaliação final
 # ______________________
 
 X_train, X_test, y_train, y_test = carregarDados("data/cdc_diabetes.csv", tamanho)

@@ -7,23 +7,6 @@
 #                  8 = 55-59 | 9 = 60-64 | 10 = 65-69 | 11 = 70-74 | 12 = 75-79 | 13 = 80 ou mais
 
 PACIENTES = {
-    # Jovem, peso normal, ativo, sem condições de saúde
-    # "Baixo risco": {
-    #     "pressao_alta": 1,
-    #     "colesterol_alto": 1,
-    #     "imc": 40,
-    #     "avc":1,
-    #     "doenca_cardiaca_ou_infarto": 1,
-    #     "atividade_fisica": 1,
-    #     "consome_frutas": 1,
-    #     "consome_vegetais": 1,
-    #     "saude_geral": 5,
-    #     "dias_saude_fisica_ruim": 30,
-    #     "dificuldade_caminhar": 1,
-    #     "sexo": 0,
-    #     "faixa_etaria": 12,
-    # },
-
     # Meia-idade, sobrepeso, pressão alta, sedentário
     "Risco intermediario": {
         "pressao_alta": 1,
