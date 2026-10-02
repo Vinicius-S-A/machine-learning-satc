@@ -31,7 +31,6 @@ from regressao import (
 from avaliacao import avaliarModeloCompleto
 from previsao  import preverNovoPaciente
 
-<<<<<<< HEAD
 # ─── Configuração ──────────────────────────────────────────────────────────────
 TAMANHO           = None    # None = dataset completo | ex.: 50_000 = amostra
 REMOVER_DUPLICATAS = False  # ver explicação em preprocessamento.py
@@ -59,35 +58,6 @@ if ANALISAR_REGRESSAO:
     validarRegressao(X_train, y_train, c_escolhido)
     c_escolhido = compararC(X_train, y_train, (0.01, 0.1, 1, 10))
     analisarLimiares(X_train, y_train, c_escolhido, (0.1, 0.2, 0.3, 0.5))
-=======
-from previsao import preverNovoPaciente
-from pacientes import PACIENTES
-from selecao import compararSelecao
-
-# ______________________
-# CONFIGURAÇÃO:
-tamanho = None              # None = dataset inteiro | ex.: 50000 = amostra (o KNN fica bem mais rápido)
-
-analisarSelecao = False     # compara a AUC removendo grupos de colunas
-avaliar = False
-analisarRegressao = False
-analisarKNN = False
-
-prever = True              # testa os pacientes de exemplo do pacientes.py
-limiar_clinico = 0.3        # limiar de decisão usado na previsão (ver analisarLimiares)
-limiares = (0.5, 0.2)       # limiares usados na avaliação final
-# ______________________
-
-X_train, X_test, y_train, y_test = carregarDados(tamanho=tamanho)
-print(f"Treino: {len(X_train)} linhas | Teste: {len(X_test)} linhas | Colunas: {X_train.shape[1]}")
-
-# Valores padrão, MAS se a análise (analisarRegressao ou analisarKNN) estiver ligada, são substituídos pelos escolhidos na validação
-c = 0.1
-k = 51
-
-if analisarSelecao:
-    compararSelecao(X_train, y_train, c=c, k=max(k, 15), uma_por_vez=True)
->>>>>>> 7ed5cd0fd073c886638f73e3f66fa72d99557860
 
 if ANALISAR_KNN:
     k_escolhido = compararK(X_train, y_train, (3, 15, 51, 101))
@@ -110,7 +80,6 @@ if AVALIAR:
 if ANALISAR_REGRESSAO:
     mostrarCoeficientes(logistic)
 
-<<<<<<< HEAD
 # ─── 5. Persistência dos modelos (reprodutibilidade) ──────────────────────────
 if SALVAR_MODELOS:
     os.makedirs("models", exist_ok=True)
@@ -149,12 +118,3 @@ if PREVER:
 
     preverNovoPaciente(logistic, paciente_exemplo, limiar_clinico=0.3)
     preverNovoPaciente(knn,      paciente_exemplo, limiar_clinico=0.3)
-=======
-if prever:
-    for nome, paciente in PACIENTES.items():
-        print(f"\n########## Paciente: {nome} ##########")
-        print(f"--- Modelo: KNN (k={k}) ---")
-        preverNovoPaciente(knn, paciente, limiar_clinico=limiar_clinico)
-        print(f"--- Modelo: Regressao Logistica (C={c}) ---")
-        preverNovoPaciente(logistic, paciente, limiar_clinico=limiar_clinico)
->>>>>>> 7ed5cd0fd073c886638f73e3f66fa72d99557860
