@@ -5,8 +5,6 @@
 #   dias_saude_* : dias ruins nos últimos 30 dias (0 a 30)
 #   faixa_etaria : 1 = 18-24 | 2 = 25-29 | 3 = 30-34 | 4 = 35-39 | 5 = 40-44 | 6 = 45-49 | 7 = 50-54
 #                  8 = 55-59 | 9 = 60-64 | 10 = 65-69 | 11 = 70-74 | 12 = 75-79 | 13 = 80 ou mais
-#   escolaridade : 1 a 6 (maior = mais anos de estudo)
-#   renda        : 1 a 8 (maior = maior renda)
 
 PACIENTES = {
     # Jovem, peso normal, ativo, sem condições de saúde
@@ -19,7 +17,7 @@ PACIENTES = {
         "atividade_fisica": 1,
         "consome_frutas": 1,
         "consome_vegetais": 1,
-        "saude_geral": 3,
+        "saude_geral": 5,
         "dias_saude_fisica_ruim": 30,
         "dificuldade_caminhar": 1,
         "sexo": 0,
