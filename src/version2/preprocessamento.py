@@ -44,8 +44,8 @@ def carregarDados(caminho, tamanho):
         if col in df.columns:
             df = df.drop(columns=[col])
 
-    print("Duplicados:", df.duplicated().sum())
-    df = df.drop_duplicates().reset_index(drop=True)
+    # print("Duplicados:", df.duplicated().sum())
+    # df = df.drop_duplicates().reset_index(drop=True)
 
     # -----------------------------------------------------------------------------------------------------
     # TRATAMENTO DE DADOS

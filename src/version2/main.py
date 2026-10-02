@@ -9,9 +9,9 @@ from pacientes import PACIENTES
 # ______________________
 # CONFIGURAÇÃO:
 tamanho = None              # None = dataset inteiro, ex.: 50000 = amostra (o KNN fica bem mais rápido)
-avaliar = True
-analisarRegressao = True
-analisarKNN = True
+avaliar = False
+analisarRegressao = False
+analisarKNN = False
 prever = True              # o previsao.py ainda usa as colunas do dataset antigo (Sylhet)
 limiares = (0.7, 0.5, 0.2)       # limiares usados na avaliação final
 # ______________________
@@ -20,16 +20,16 @@ X_train, X_test, y_train, y_test = carregarDados("data/cdc_diabetes.csv", tamanh
 print(f"Treino: {len(X_train)} linhas | Teste: {len(X_test)} linhas | Colunas: {X_train.shape[1]}")
 
 # Valores padrão; se a análise estiver ligada, são substituídos pelos escolhidos na validação (só no treino)
-c = 0.1
-k = 101 # 3
+c = 0.001
+k = 201 # 3
 
 if analisarRegressao:
     validarRegressao(X_train, y_train, c)
-    c = compararC(X_train, y_train, (0.1, 1, 10))
+    c = compararC(X_train, y_train, (0.001, 0.03, 0.1))
     analisarLimiares(X_train, y_train, c, (0.1, 0.2, 0.3, 0.5))
 
 if analisarKNN:
-    k = compararK(X_train, y_train, (3, 15, 51, 101))
+    k = compararK(X_train, y_train, (51, 101, 201, 401))
 
 logistic = treinarRegressao(X_train, y_train, c)
 knn = treinarKNN(X_train, y_train, k)
