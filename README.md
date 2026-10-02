@@ -1,13 +1,7 @@
-# Projeto de Machine Learning: Previsão de Risco (CDC Diabetes)
+ 1.
+ pip install pandas scikit-learn matplotlib
+ pip install ucimlrepo
 
-Este repositório contém o código-fonte e os experimentos do projeto final de Machine Learning. O pipeline foi estruturado para garantir a **reprodutibilidade total** dos resultados, abordando desde a extração dos dados até a exportação dos modelos otimizados.
-
-## 🛠️ Especificações Técnicas e Requisitos
-- **Linguagem:** Python 3.9+
-- **Bibliotecas Principais:** `pandas`, `scikit-learn`, `scipy` (para cálculos de Intervalo de Confiança estatístico), `matplotlib`, `ucimlrepo`, `joblib`.
-
-## ⚙️ Instalação das Dependências
-Abra o seu terminal e execute o comando abaixo para instalar todos os pacotes necessários:
-
-```bash
-pip install pandas scikit-learn scipy matplotlib ucimlrepo joblib
+ 2. Rode o setup/installcdc.py
+ Isso vai receber o repositório do CDC em data/cdc_diabetes.csv e logo apagar a pasta e o arquivo python
+ ...

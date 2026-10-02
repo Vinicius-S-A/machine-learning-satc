@@ -1,12 +1,3 @@
-"""
-previsao.py — Version 2 Refatorada
--------------------------------------
-Mantido funcionalmente idêntico ao original (já estava bem implementado).
-Pequenas melhorias:
-  - Documentação alinhada com o restante do módulo refatorado.
-  - Sem alterações de lógica.
-"""
-
 import pandas as pd
 
 COLUNAS_ESPERADAS = [
@@ -90,6 +81,7 @@ def preverNovoPaciente(modelo_treinado, dados_paciente: dict, limiar_clinico=0.3
         decisao = "positivo"
     else:
         print("DIAGNÓSTICO: Paciente classificado como NEGATIVO para risco inicial.")
+        decisao = "negativo"
 
     print("=" * 60 + "\n")
 
